@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId, Repository } from 'typeorm';
 import { FilterSalarioDto } from './dto/filter-salario.dto';
 import { SalarioFuncionario } from './entities/salario_funcionario.entity';
+import moment from 'moment';
 
 type MongoOperators<T> = {
   $gte?: T;
@@ -29,10 +30,16 @@ export class AppRepository {
       where.dataAdmissao = {};
 
       if (filterData.dataAdmissaoInicio) {
-        where.dataAdmissao.$gte = new Date(filterData.dataAdmissaoInicio);
+        where.dataAdmissao.$gte = moment(filterData.dataAdmissaoInicio)
+          .utc()
+          .startOf('day')
+          .toDate();
       }
       if (filterData.dataAdmissaoFim) {
-        where.dataAdmissao.$lte = new Date(filterData.dataAdmissaoFim);
+        where.dataAdmissao.$lte = moment(filterData.dataAdmissaoFim)
+          .utc()
+          .endOf('day')
+          .toDate();
       }
     }
 
@@ -52,6 +59,9 @@ export class AppRepository {
         skip: (page - 1) * limit,
         take: limit,
         where,
+        order: {
+          dataAdmissao: 'asc',
+        },
       });
 
     return { salarios, total };
