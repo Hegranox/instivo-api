@@ -143,6 +143,80 @@ describe('AppService', () => {
     expect(salarios.total).toBe(salarios.salarios.length);
   });
 
+  it('should find all salarios with valid filter dataAdmissaoInicio', async () => {
+    const salarios = await service.findAllSalarios({
+      dataAdmissaoInicio: moment().subtract(1, 'year').toDate(),
+      page: 1,
+      limit: 10,
+    });
+    expect(salarios).toBeDefined();
+    expect(salarios.salarios).toBeDefined();
+    expect(salarios.salarios.length).toBe(1);
+    expect(salarios.total).toBe(salarios.salarios.length);
+  });
+
+  it('should find all salarios with valid filter dataAdmissaoFim', async () => {
+    const salarios = await service.findAllSalarios({
+      dataAdmissaoFim: moment().toDate(),
+      page: 1,
+      limit: 10,
+    });
+    expect(salarios).toBeDefined();
+    expect(salarios.salarios).toBeDefined();
+    expect(salarios.salarios.length).toBe(1);
+    expect(salarios.total).toBe(salarios.salarios.length);
+  });
+
+  it('should find all salarios with valid filter dataAdmissaoInicio and dataAdmissaoFim', async () => {
+    const salarios = await service.findAllSalarios({
+      dataAdmissaoInicio: moment().subtract(1, 'year').toDate(),
+      dataAdmissaoFim: moment().toDate(),
+      page: 1,
+      limit: 10,
+    });
+    expect(salarios).toBeDefined();
+    expect(salarios.salarios).toBeDefined();
+    expect(salarios.salarios.length).toBe(1);
+    expect(salarios.total).toBe(salarios.salarios.length);
+  });
+
+  it('should find all salarios with valid filter salarioBrutoInicio', async () => {
+    const salarios = await service.findAllSalarios({
+      salarioBrutoInicio: 1000,
+      page: 1,
+      limit: 10,
+    });
+    expect(salarios).toBeDefined();
+    expect(salarios.salarios).toBeDefined();
+    expect(salarios.salarios.length).toBe(1);
+    expect(salarios.total).toBe(salarios.salarios.length);
+  });
+
+  it('should find all salarios with valid filter salarioBrutoFim', async () => {
+    const salarios = await service.findAllSalarios({
+      salarioBrutoFim: 1000,
+      page: 1,
+      limit: 10,
+    });
+    expect(salarios).toBeDefined();
+    expect(salarios.salarios).toBeDefined();
+    expect(salarios.salarios.length).toBe(1);
+    expect(salarios.total).toBe(salarios.salarios.length);
+  });
+
+  it('should find all salarios with valid filter salarioBrutoInicio and salarioBrutoFim', async () => {
+    const salarios = await service.findAllSalarios({
+      salarioBrutoInicio: 1000,
+      salarioBrutoFim: 1000,
+      page: 1,
+      limit: 10,
+    });
+    expect(salarios).toBeDefined();
+    expect(salarios.salarios).toBeDefined();
+    expect(salarios.salarios.length).toBe(1);
+    expect(salarios.total).toBe(salarios.salarios.length);
+  });
+
   it('should find salario by id with valid id', async () => {
     const salario = await service.findSalarioById('111111111111111111111111');
     expect(salario).toBeDefined();

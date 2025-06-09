@@ -52,6 +52,60 @@ describe('AppController (e2e)', () => {
     );
   });
 
+  it('/ (GET) Shoud find all salarios with valid filter dataAdmissaoInicio', async () => {
+    const response = await request(app.getHttpServer()).get(
+      '/registros?page=1&limit=10&dataAdmissaoInicio=2024-05-01',
+    );
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(
+      (response.body as { salarios: any[]; total: number }).salarios.length,
+    ).toBe(10);
+    expect((response.body as { salarios: any[]; total: number }).total).toBe(
+      13,
+    );
+  });
+
+  it('/ (GET) Shoud find all salarios with valid filter dataAdmissaoFim', async () => {
+    const response = await request(app.getHttpServer()).get(
+      '/registros?page=1&limit=10&dataAdmissaoFim=2025-01-01',
+    );
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(
+      (response.body as { salarios: any[]; total: number }).salarios.length,
+    ).toBe(10);
+    expect((response.body as { salarios: any[]; total: number }).total).toBe(
+      20,
+    );
+  });
+
+  it('/ (GET) Shoud find all salarios with valid filter salarioBrutoInicio', async () => {
+    const response = await request(app.getHttpServer()).get(
+      '/registros?page=1&limit=10&salarioBrutoInicio=4000',
+    );
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(
+      (response.body as { salarios: any[]; total: number }).salarios.length,
+    ).toBe(10);
+    expect((response.body as { salarios: any[]; total: number }).total).toBe(
+      22,
+    );
+  });
+
+  it('/ (GET) Shoud find all salarios with valid filter salarioBrutoFim', async () => {
+    const response = await request(app.getHttpServer()).get(
+      '/registros?page=1&limit=10&salarioBrutoFim=4000',
+    );
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(
+      (response.body as { salarios: any[]; total: number }).salarios.length,
+    ).toBe(4);
+    expect((response.body as { salarios: any[]; total: number }).total).toBe(4);
+  });
+
   it('/ (GET) Shoud find all salarios with filter', async () => {
     const response = await request(app.getHttpServer()).get(
       '/registros?page=1&limit=10&dataAdmissaoInicio=2024-01-01&dataAdmissaoFim=2025-12-31&salarioBrutoInicio=2000&salarioBrutoFim=3500',

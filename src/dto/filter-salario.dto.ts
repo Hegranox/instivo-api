@@ -1,6 +1,6 @@
-import { JoiSchema, JoiSchemaOptions } from 'nestjs-joi';
 import { ApiProperty } from '@nestjs/swagger';
-import Joi from 'joi';
+import Joi, { CustomHelpers } from 'joi';
+import { JoiSchema, JoiSchemaOptions } from 'nestjs-joi';
 
 @JoiSchemaOptions({ allowUnknown: false })
 export class FilterSalarioDto {
@@ -11,14 +11,27 @@ export class FilterSalarioDto {
   @JoiSchema(
     Joi.date()
       .optional()
-      .when('dataAdmissaoFim', {
-        is: Joi.date().valid(),
-        then: Joi.date().max(Joi.ref('dataAdmissaoFim')),
-        otherwise: Joi.date(),
+      .custom((value: Date, helpers: CustomHelpers) => {
+        const context = helpers.prefs?.context as { dataAdmissaoFim?: string };
+
+        if (context?.dataAdmissaoFim) {
+          const inicio = new Date(value);
+          const fim = new Date(context.dataAdmissaoFim);
+
+          if (
+            !isNaN(inicio.getTime()) &&
+            !isNaN(fim.getTime()) &&
+            inicio > fim
+          ) {
+            return helpers.error('date.less', { limit: fim.toISOString() });
+          }
+        }
+
+        return value;
       })
       .messages({
         'date.base': 'Data de admissão deve ser uma data válida',
-        'date.max':
+        'date.less':
           'Data de admissão inicial não pode ser maior que a data de admissão final',
       }),
   )
@@ -42,10 +55,18 @@ export class FilterSalarioDto {
   @JoiSchema(
     Joi.number()
       .optional()
-      .when('salarioBrutoFim', {
-        is: Joi.number().greater(0),
-        then: Joi.number().max(Joi.ref('salarioBrutoFim')),
-        otherwise: Joi.number(),
+      .custom((value: number, helpers: CustomHelpers) => {
+        const context = helpers.prefs?.context as { salarioBrutoFim?: number };
+
+        if (context?.salarioBrutoFim) {
+          if (value > context.salarioBrutoFim) {
+            return helpers.error('number.max', {
+              limit: context.salarioBrutoFim,
+            });
+          }
+        }
+
+        return value;
       })
       .messages({
         'number.base': 'Salário bruto deve ser um número válido',
