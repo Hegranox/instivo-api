@@ -5,12 +5,16 @@ services:
       dockerfile: Dockerfile
     container_name: instivo-api
     restart: always
-    ports:
-      - '3000:3000'
-    env_file:
-      - .env
     depends_on:
       - instivo-mongodb
+    networks:
+      - instivo-network
+    ports:
+      - '3333:3333'
+    environment:
+      - PORT=3333
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://admin:admin@instivo-mongodb:27017/instivo?authSource=admin
 
   instivo-mongodb:
     image: mongo:8.0.0
@@ -24,6 +28,12 @@ services:
       - '27017:27017'
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - instivo-network
 
 volumes:
   mongodb_data:
+
+networks:
+  instivo-network:
+    driver: bridge
