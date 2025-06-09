@@ -1,0 +1,11 @@
+services:
+  instivo-mongodb-test:
+    image: mongo:8.0.0
+    container_name: instivo-mongodb-test
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: instivo_test
+    ports:
+      - '27018:27017'
